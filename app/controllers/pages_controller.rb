@@ -1,5 +1,4 @@
 class PagesController < ApplicationController
-  before_action :set_page, only: [:show, :edit, :update, :destroy]
 
   # GET /pages
   # GET /pages.json
@@ -10,8 +9,12 @@ class PagesController < ApplicationController
   # GET /pages/1
   # GET /pages/1.json
   def show
+    if valid_page?
+      render template: "pages/#{params[:page]}"
+    else
+      render file: "public/404.html", status: :not_found
+    end
   end
-
   # GET /pages/new
   def new
     @page = Page.new
@@ -62,13 +65,17 @@ class PagesController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_page
-      @page = Page.find(params[:id])
-    end
+  # Page parameters method (set what parameters is required to Add and Edit pages)
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def page_params
-      params.fetch(:page, {})
-    end
+  def valid_page?
+    File.exist?(Pathname.new(Rails.root + "app/views/pages/#{params[:page]}.html.erb"))
+  end
+
+  def page_params
+    @page_params = params.require(:page).permit(:title, :body, :slug)
+  end
+
+
+
 end
+

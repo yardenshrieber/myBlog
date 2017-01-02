@@ -1,0 +1,11 @@
+<%
+  posts = contentful.entries(content_type: "2wKn6yEnZewu2SCCkus4as")
+#  authors = contentful.entries(content_type: "1kUEViTN4EmGiEaaeC6ouY")
+%>
+
+<% posts.each do |post| %>
+  <h1><%= post.title %></h1>
+  <h3><span>by:</span><%= post.author.first.fields[:name] %></h3>
+  <p><span>Slug: </span><%= post.slug %></p>
+<% end %>
+

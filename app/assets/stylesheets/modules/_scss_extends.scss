@@ -1,0 +1,427 @@
+// Real Colors
+
+$bg: #f9f9f9;
+$pink: #f28eaa;
+$blue: #3bc7f4;
+
+
+//Social Colors
+$facebook: #3b5998;
+$twitter: #55acee;
+$googleplus: #dd4b39;
+$linkedin: #007bb6;
+$pinterest: #cb2027;
+$youtube: #bb0000;
+$instagram: #517fa4;
+$tumblr: #32506d;
+$Dribbble: #ea4c89;
+$vimeo: #1ab7ea;
+$lastfm: #c3000d;
+$android:#a4c639;
+$blogger:#f57d00;
+$wordpress:#21759b;
+$github:#4183c4;
+$skype:#00aff0;
+$android:#a4c639;
+
+
+/*** Functions ***/
+
+@function darker2($color) {
+  @return $color - ($color/3);
+}
+
+@function lighten($color) {
+  @return $color + ($color/5);
+}
+
+@function rgbaf($rgb, $a){
+  @return rgba($rgb, $rgb, $rgb, $a);
+}
+
+/*** Transitions & Transforms ***/
+
+@mixin transition($transition...) {
+  -webkit-transition: $transition;
+  transition: $transition;
+}
+
+@mixin transition2($transition2...) {
+  -webkit-transition: -webkit-transform 0.3s, $transition2;
+  transition: transform 0.3s, $transition2;
+}
+
+@mixin property($property...) {
+  -webkit-transition-property: $property;
+  transition-property: $property;
+}
+
+@mixin property2($property2...) {
+  -webkit-transition-property: -webkit-transform, $property2;
+  transition-property: transform, $property2;
+}
+
+@mixin duration($duration...) {
+  -webkit-transition-duration: $duration;
+  transition-duration: $duration;
+}
+
+@mixin delay($delay...) {
+  -webkit-transition-delay: $delay;
+  transition-delay: $delay;
+}
+
+@mixin timingFunction($timingFunction) {
+  @if $timingFunction == 'special' {
+    $timingFunction: cubic-bezier(0.7, 0, 0.3, 1);
+  }
+  @if $timingFunction == 'easing' {
+    $timingFunction: cubic-bezier(0.4, 0.0, 0.2, 1);
+  }
+  -webkit-transition-timing-function: $timingFunction;
+  transition-timing-function: $timingFunction;
+}
+
+@mixin transform($transform...) {
+  -webkit-transform: $transform;;
+  transform: $transform;
+}
+
+@mixin origin($origin...) {
+  -webkit-transform-origin: $origin;
+  transform-origin: $origin;
+}
+
+/*** Mixins ***/
+
+
+@mixin ratio($width, $height) {
+  position: relative;
+  &:before{
+    display: block;
+    content: '';
+    width:100%;
+    padding-top:($height / $width) * 100%;
+  }
+}
+
+@mixin box-shadow($box-shadow...) {
+  -webkit-box-shadow: $box-shadow;
+  -moz-box-shadow: $box-shadow;
+  box-shadow: $box-shadow;
+}
+
+
+// Buttons hover
+
+@mixin button-hover-bg($bg) {
+  background: $bg;
+  @include transition(background 0.3s);
+  &:hover {
+    background:darken($bg,17%);
+  }
+  &:active {
+    background:darken($bg,30%);
+  }
+}
+
+
+@mixin arrow($side, $size, $color) {
+  $transparentBorder: $size/2 solid transparent;
+  border-#{$side}: $size solid;
+  border-#{$side}-color: $color;
+  width:0;
+
+  @if $side == 'bottom' or $side == 'top' {
+    border-left: $transparentBorder;
+    border-right: $transparentBorder;
+  }
+  @if $side == 'left' or $side == 'right' {
+    border-top: $transparentBorder;
+    border-bottom: $transparentBorder;
+  }
+}
+
+@mixin checkbox {
+  position: absolute;
+  visibility: hidden;
+  pointer-events: none;
+  &:checked + label {
+    @content;
+  }
+}
+
+@mixin counter($child) {
+  $child: unquote($child);
+  counter-reset: cnt;
+  #{$child}:after {
+    counter-increment: cnt;
+    content: counter(cnt);
+  }
+}
+
+@mixin line-clamp($lineClamp) {
+  -webkit-line-clamp: $lineClamp;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+@mixin cornerRadius($horizontal, $vertical, $radius: 3px) {
+  @if $vertical == 'both' {
+    border-#{$horizontal}-right-radius: $radius;
+    border-#{$horizontal}-left-radius: $radius;
+  } @else {
+    border-#{$horizontal}-#{$vertical}-radius: $radius;
+  }
+}
+
+@mixin hamburger-menu($height, $color) {
+  $halfHeight: $height/2;
+
+  // Hamburger shapes
+  span, &:after, &:before {
+    content: '';
+    background: $color;
+    width: 100%;
+    height: $height;
+    position: absolute;
+    left: 0;
+    @include transition2(top 0.3s);
+
+  }
+  span {
+    top: 50%;
+    margin-top: -$halfHeight;
+    @include transition(background 0.1s);
+  }
+  &:before {
+    top: 0;
+  }
+  &:after {
+    top: calc(100% - #{$height});
+  }
+
+  // Hamburger shapes on Active
+  &.active {
+    span {
+      background: transparent;
+    }
+    &:after {
+      top: 50%;
+      margin-top: -$halfHeight;
+      @include transform(rotate(-45deg));
+    }
+    &:before {
+      top: 50%;
+      margin-top: -$halfHeight;
+      @include transform(rotate(45deg));
+    }
+  }
+
+}
+
+@mixin flexBox {
+  display: flex;
+  flex-wrap: wrap;
+  li {
+    flex: auto;
+  }
+}
+
+/*** Animation ***/
+
+@mixin animation($animation-name) {
+  @-webkit-keyframes #{$animation-name} {
+    @content;
+  }
+  @-moz-keyframes #{$animation-name} {
+    @content;
+  }
+  @-o-keyframes #{$animation-name} {
+    @content;
+  }
+  @keyframes #{$animation-name} {
+    @content;
+  }
+}
+
+@mixin animation_call($str...) {
+  -webkit-animation: #{$str};
+  -moz-animation: #{$str};
+  -o-animation: #{$str};
+  animation: #{$str};
+}
+
+@mixin animation-duration($duration) {
+  -webkit-animation-duration: #{$duration};
+  -moz-animation-duration: #{$duration};
+  -o-animation-duration: #{$duration};
+  animation-duration: #{$duration};
+}
+
+@mixin animation-timingFunction($timingFunction) {
+  -webkit-animation-timing-function: #{$timingFunction};
+  -moz-animation-timing-function: #{$timingFunction};
+  -o-animation-timing-function: #{$timingFunction};
+  animation-timing-function: #{$timingFunction};
+}
+
+/*** nth-child ***/
+
+@mixin starting-after($nth) {
+  &:nth-child(n+#{$nth}) {
+    @content;
+  }
+}
+
+@mixin ends-at($nth) {
+  &:nth-child(-n+#{$nth}) {
+    @content;
+  }
+}
+
+/*** Special properties ***/
+
+// Placeholder
+@mixin fadeout_ph($transparency: 0) {
+  &:focus::-webkit-input-placeholder {
+    opacity: $transparency;
+    @include transition(opacity 0.3s);
+  }
+  &:focus::-moz-placeholder {
+    /* Firefox 18- */
+    opacity: $transparency;
+    @include transition(opacity 0.3s);
+  }
+
+  &:focus:-moz-placeholder {
+    /* Firefox 19+ */
+    opacity: $transparency;
+    @include transition(opacity 0.3s);
+  }
+
+  &:focus::-ms-input-placeholder {
+    opacity: $transparency;
+    @include transition(opacity 0.3s);
+  }
+}
+
+// Scrollbar
+@mixin scrollbar($width, $outerBG, $innerBG, $borderRadius: 0) {
+  &::-webkit-scrollbar {
+    border-radius: $borderRadius;
+    background: $outerBG;
+    width: $width;
+    height: $width;
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: $borderRadius;
+    background: $innerBG;
+    @content;
+  }
+}
+
+/*** Extends ***/
+
+
+%text_overflow {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  text-decoration: none;
+}
+
+%clearfix {
+  &:after {
+    content: ".";
+    visibility: hidden;
+    display: block;
+    height: 0;
+    clear: both;
+  }
+}
+
+%firstCapitalLetter {
+  &:first-letter {
+    text-transform: capitalize;
+  }
+}
+
+%backfaceVisibility {
+  -webkit-backface-visibility: hidden;
+  -moz-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+
+
+%fadeoutPlaceholder {
+  &:focus::-webkit-input-placeholder {
+    opacity: 0.3;
+    @include transition(opacity 0.3s);
+  }
+  &:focus::-moz-placeholder {
+    /* Firefox 18- */
+    opacity: 0.3;
+    @include transition(opacity 0.3s);
+  }
+
+  &:focus:-moz-placeholder {
+    /* Firefox 19+ */
+    opacity: 0.3;
+    @include transition(opacity 0.3s);
+  }
+
+  &:focus::-ms-input-placeholder {
+    opacity: 0.3;
+    @include transition(opacity 0.3s);
+  }
+}
+
+/*** Media queries ***/
+
+@mixin breakpoint($point) {
+  @if $point == large {
+    @media (min-width: 1200px) {
+      @content;
+    }
+  } @else if $point == medium {
+    @media (min-width: 992px) {
+      @content;
+    }
+  } @else if $point == small {
+    @media (max-width: 991px) {
+      @content;
+    }
+  } @else if $point == 'extrasmall'{
+    @media (max-width: 768px){
+      @content;
+    }
+  }
+}
+
+@mixin max-width($point) {
+  @media (max-width: $point) {
+    @content;
+  }
+}
+
+@mixin min-width($point) {
+  @media (min-width: $point) {
+    @content;
+  }
+}
+
+
+@mixin pinterest_grid($column, $align-spaceing){
+  -moz-column-count: $column;
+  -moz-column-gap: $align-spaceing+'px';
+  -moz-column-fill: auto;
+  -webkit-column-count: $column;
+  -webkit-column-gap: 10px;
+  -webkit-column-fill: auto;
+  column-count: $column;
+  column-gap: $align-spaceing+'px';
+  column-fill: auto;
+}
